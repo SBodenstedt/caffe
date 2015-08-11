@@ -1,0 +1,145 @@
+name: "MNISTConvAutoencoder"
+#input: "data"
+#input_dim: 1
+#input_dim: 3
+#input_dim: 240
+#input_dim: 320
+layer {
+  name: "data"
+  type: "Data"
+  top: "data"
+    #include {
+    #phase: TRAIN
+  #}
+  transform_param {
+    scale: 0.0039215684
+    mean_file: "/media/data/sebastian/DataSet/miccai15-320/mean.binaryproto"
+  }
+  data_param {
+    source: "/media/data/sebastian/DataSet/miccai15-320"
+    batch_size: 2
+    backend: LMDB
+  }
+}
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 50
+    kernel_size: 12
+    pad: 0
+    stride: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "conv1"
+}
+layer {
+  name: "fc6"
+  type: "InnerProduct"
+  bottom: "conv1"
+  top: "fc6"
+  param {
+    lr_mult: 10
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 1024
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 1
+    }
+  }
+}
+layer {
+  name: "relu6"
+  type: "ReLU"
+  bottom: "fc6"
+  top: "fc6"
+}
+layer {
+  name: "fc7"
+  type: "InnerProduct"
+  bottom: "fc6"
+  top: "fc7"
+  param {
+    lr_mult: 10
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 226200
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 1
+    }
+  }
+}
+layer {
+  name: "relu7"
+  type: "ReLU"
+  bottom: "fc7"
+  top: "fc7"
+}
+layer {
+  name: "reshape1"
+  type: "Reshape"
+  bottom: "fc7"
+  top: "reshape1"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: 50
+      dim: 58
+      dim: 78
+    }
+  }
+}
+layer {
+  name: "loss"
+  type: "EuclideanLoss"
+  bottom: "reshape1"
+  bottom: "conv1"
+}
+#layer {
+#  name: "prob"
+#  type: "Softmax"
+#  bottom: "conv1t"
+#  top: "prob"
+#}

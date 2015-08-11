@@ -1,0 +1,22 @@
+# The train/test net protocol buffer definition
+net: "examples/mnist/mnist_convautoencoder_simple.prototxt"
+test_state: { stage: 'test-on-train' }
+test_iter: 500
+test_state: { stage: 'test-on-test' }
+test_iter: 100
+test_interval: 500
+test_initialization: false
+test_compute_loss: true
+average_loss: 40
+base_lr: 0.00001
+lr_policy: "step"
+gamma: 0.4
+stepsize: 10000
+display: 1
+max_iter: 10000
+weight_decay: 0.0005
+snapshot: 10000
+snapshot_prefix: "examples/mnist/mnist_convautoencoder_simple"
+momentum: 0.9
+# solver mode: CPU or GPU
+solver_mode: GPU

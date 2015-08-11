@@ -470,6 +470,15 @@ void Net<Dtype>::AppendParam(const NetParameter& param, const int layer_id,
           << "Shared parameter blobs must have the same count.";
     } else {
       // Strict dimension checking -- all dims must be the same.
+      
+      printf("Shape this %d: ",param_id);
+      for (unsigned int i = 0; i < this_blob->shape().size();i++)
+	printf("%d ",this_blob->shape()[i]);
+      printf("\n");
+      printf("Shape owner: ");
+      for (unsigned int i = 0; i < owner_blob->shape().size();i++)
+	printf("%d ",owner_blob->shape()[i]);
+      printf("\n");
       CHECK(this_blob->shape() == owner_blob->shape());
     }
     layers_[layer_id]->blobs()[param_id]->ShareData(
